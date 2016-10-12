@@ -1,0 +1,43 @@
+server:
+  port: 8081
+  contextPath: /mbox
+
+spring:
+  thymeleaf:
+    cache: false
+  datasource:
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://114.55.59.175:3306/lj_huijiabao?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&failOverReadOnly=false
+    username: linju
+    password: linju@focusoo
+    validation-query: select 1 from dual
+    max-active: 100
+    min-idle: 10
+    initial-size: 10
+    test-while-idle: true
+    time-between-eviction-runs-millis: 1800
+
+socketIO:
+  port: 10087
+  host: localhost
+
+mina:
+  port: 10086
+  pool: 5
+  timeout: 30
+
+logging:
+  file: /home/mbox/logs/mbox.log
+
+temp:
+  filePath: E:/temp
+
+resource:
+  path: /home/mbox/resource/
+  prefix: http://192.168.1.100:8081/mbox-resource/
+
+wkcx:
+  url: http://192.168.1.100:8081/mbox/
+  needUser: true
+  webhook: http://www.mbox100.cn/wkcx/webhook
+  writeLog: true

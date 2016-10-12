@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linju.box.mapper.BoxBindingMapper">
+
+    <resultMap id="ObdBindingMap" type="com.linju.box.domain.MBoxBindingDO">
+        <result column="id" property="id"/>
+        <result column="create_timestamp" property="createTimestamp"/>
+        <result column="last_changetimestamp" property="lastChangeTimestamp"/>
+        <result column="user_id" property="userId"/>
+        <result column="device_id" property="deviceId"/>
+        <result column="deleted" property="deleted" typeHandler="com.linju.box.mybatis.DeletedHandler"/>
+    </resultMap>
+
+    <sql id="columns">
+        user_id,device_id,deleted,last_changetimestamp,create_timestamp
+    </sql>
+
+    <sql id="insert-columns">
+        #{userId},#{deviceId},'UN_DELETED',now(),now()
+    </sql>
+
+	<select id="findById" resultMap="ObdBindingMap" >
+		select id,<include refid="columns" />
+        from mbox_obd_binding where id = #{id} AND deleted = 'UN_DELETED'
+	</select>
+
+    <select id="findAll" resultMap="ObdBindingMap" >
+        select * from mbox_obd_binding WHERE deleted = 'UN_DELETED';
+    </select>
+
+    <select id="findAllByAccountId" resultMap="ObdBindingMap" >
+        select * from mbox_obd_binding WHERE user_id = #{userId};
+    </select>
+
+    <select id="findByUserId" resultMap="ObdBindingMap" >
+        select * from mbox_obd_binding WHERE user_id = #{userId} and deleted = 'UN_DELETED'
+    </select>
+
+    <insert id="addBinding" parameterType="com.linju.box.domain.MBoxBindingDO">
+        insert into mbox_obd_binding(<include refid="columns"/>)
+        VALUES (<include refid="insert-columns"/>);
+        <selectKey resultType="java.lang.Long" keyProperty="id">
+            select last_insert_id() as ID from mbox_obd_binding limit 1
+        </selectKey>
+    </insert>
+
+    <update id="unbinding">
+        UPDATE mbox_obd_binding SET deleted = 'DELETED' , last_changetimestamp = now()
+        WHERE user_id = #{userId}
+        AND device_id = #{deviceId} AND deleted = 'UN_DELETED'
+    </update>
+
+</mapper>
